@@ -13,19 +13,19 @@ import java.util.concurrent.ThreadLocalRandom
 class SecondaryIndexYugabyte : IStressProfile {
 
     override fun prepare(session: Session) {
-        insert = session.prepare("INSERT INTO person (name, age, city) values (?, ?, ?)")
-        select_base = session.prepare("SELECT * FROM person WHERE name = ?")
-        select_by_city = session.prepare("SELECT * FROM person WHERE city = ?")
-        delete_base = session.prepare("DELETE FROM person WHERE name = ?")
+        insert = session.prepare("INSERT INTO person_si (name, age, city) values (?, ?, ?)")
+        select_base = session.prepare("SELECT * FROM person_si WHERE name = ?")
+        select_by_city = session.prepare("SELECT * FROM person_si WHERE city = ?")
+        delete_base = session.prepare("DELETE FROM person_si WHERE name = ?")
 
 
     }
 
-    override fun schema(): List<String> = listOf("""CREATE TABLE IF NOT EXISTS person
+    override fun schema(): List<String> = listOf("""CREATE TABLE IF NOT EXISTS person_si
                         | (name text, age int, city text, primary key(name))
 			| WITH transactions = { 'enabled' : true }""".trimMargin(),
 
-                        """CREATE INDEX IF NOT EXISTS ON person (city)""".trimMargin())
+                        """CREATE INDEX IF NOT EXISTS ON person_si (city)""".trimMargin())
 
     override fun getRunner(context: StressContext): IStressRunner {
 
